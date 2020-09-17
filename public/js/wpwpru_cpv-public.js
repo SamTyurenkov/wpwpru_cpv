@@ -1,4 +1,7 @@
-window.onload = function() {
+(function( $ ) {
+	'use strict';
+
+$(function() {
 
 		var nonce = wpwpru_cpv_ajax_object.nonce;
 		var ajax_url = wpwpru_cpv_ajax_object.ajax_url;
@@ -20,5 +23,6 @@ window.onload = function() {
 					console.log('data ' + data + ' ' + textStatus + ' '+ errorThrown);
 					}
 			});
-
-}
+});
+	
+})( jQuery );

@@ -26,7 +26,7 @@
  */
 
 // If this file is called directly, abort.
-if (!defined('WPINC')) {
+if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
@@ -35,15 +35,14 @@ if (!defined('WPINC')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('WPWPRU_CPV_VERSION', '1.0.0');
+define( 'WPWPRU_CPV_VERSION', '1.0.0' );
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-wpwpru_cpv-activator.php
  */
-function activate_wpwpru_cpv()
-{
-	require_once plugin_dir_path(__FILE__) . 'includes/class-wpwpru_cpv-activator.php';
+function activate_wpwpru_cpv() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wpwpru_cpv-activator.php';
 	Wpwpru_cpv_Activator::activate();
 }
 
@@ -51,20 +50,19 @@ function activate_wpwpru_cpv()
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-wpwpru_cpv-deactivator.php
  */
-function deactivate_wpwpru_cpv()
-{
-	require_once plugin_dir_path(__FILE__) . 'includes/class-wpwpru_cpv-deactivator.php';
+function deactivate_wpwpru_cpv() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wpwpru_cpv-deactivator.php';
 	Wpwpru_cpv_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, 'activate_wpwpru_cpv');
-register_deactivation_hook(__FILE__, 'deactivate_wpwpru_cpv');
+register_activation_hook( __FILE__, 'activate_wpwpru_cpv' );
+register_deactivation_hook( __FILE__, 'deactivate_wpwpru_cpv' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path(__FILE__) . 'includes/class-wpwpru_cpv.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-wpwpru_cpv.php';
 
 /**
  * Begins execution of the plugin.
@@ -75,75 +73,49 @@ require plugin_dir_path(__FILE__) . 'includes/class-wpwpru_cpv.php';
  *
  * @since    1.0.0
  */
-function run_wpwpru_cpv()
-{
+function run_wpwpru_cpv() {
 
 	$plugin = new Wpwpru_cpv();
 	$plugin->run();
+
 }
 run_wpwpru_cpv();
 
-define('WPWPRU_CPV_PLUGIN_DIR_PATH', plugin_dir_path(__FILE__));
+define('WPWPRU_CPV_PLUGIN_DIR_PATH',plugin_dir_path( __FILE__ ));
 
-function wpwpru_cpv_get_template_part($slug, $name = null)
-{
+function wpwpru_cpv_get_template_part($slug, $name = null) {
 
-	do_action("wpwpru_cpv_get_template_part_{$slug}", $slug, $name);
+  do_action("wpwpru_cpv_get_template_part_{$slug}", $slug, $name);
 
-	$templates = array();
-	if (isset($name))
-		$templates[] = "{$slug}-{$name}.php";
+  $templates = array();
+  if (isset($name))
+      $templates[] = "{$slug}-{$name}.php";
 
-	$templates[] = "{$slug}.php";
+  $templates[] = "{$slug}.php";
 
-	wpwpru_cpv_get_template_path($templates, true, false);
+  wpwpru_cpv_get_template_path($templates, true, false);
 }
 
 /* Extend locate_template from WP Core 
 * Define a location of your plugin file dir to a constant in this case = WPWPRU_CPV_PLUGIN_DIR_PATH 
 * Note: WPWPRU_CPV_PLUGIN_DIR_PATH - can be any folder/subdirectory within your plugin files 
-*/
+*/ 
 
-function wpwpru_cpv_get_template_path($template_names, $load = false, $require_once = true)
-{
-	$located = '';
-	foreach ((array) $template_names as $template_name) {
-		if (!$template_name)
-			continue;
+function wpwpru_cpv_get_template_path($template_names, $load = false, $require_once = true ) {
+    $located = ''; 
+    foreach ( (array) $template_names as $template_name ) { 
+      if ( !$template_name ) 
+        continue; 
 
-		/* search file within the WPWPRU_CPV_PLUGIN_DIR_PATH only */
-		if (file_exists(WPWPRU_CPV_PLUGIN_DIR_PATH . $template_name)) {
-			$located = WPWPRU_CPV_PLUGIN_DIR_PATH . $template_name;
-			break;
-		}
-	}
+      /* search file within the WPWPRU_CPV_PLUGIN_DIR_PATH only */ 
+      if ( file_exists(WPWPRU_CPV_PLUGIN_DIR_PATH . $template_name)) { 
+        $located = WPWPRU_CPV_PLUGIN_DIR_PATH . $template_name; 
+        break; 
+      } 
+    }
 
-	if ($load && '' != $located)
-		load_template($located, $require_once);
+    if ( $load && '' != $located )
+        load_template( $located, $require_once );
 
-	return $located;
-	die();
-}
-
-add_action('wp_ajax_nopriv_wpwpru_cpv_pageviewer', 'wpwpru_cpv_pageviewer');
-add_action('wp_ajax_wpwpru_cpv_pageviewer', 'wpwpru_cpv_pageviewer');
-function wpwpru_cpv_pageviewer()
-{
-
-	global $wpdb;
-
-	$id = strip_tags($_POST['id']);
-
-	if (is_numeric($id) && strlen($id) < 7 && wp_verify_nonce($_POST['nonce'], '_wpwpru_cpv')) {
-
-		$views = get_post_meta($id, 'wpwpru_cpv_pageviews', true);
-		if (empty($views)) {
-			update_post_meta($id, 'wpwpru_cpv_pageviews', 1);
-		} else {
-			$wpdb->query(
-				$wpdb->prepare("UPDATE wp_postmeta	SET meta_value = meta_value + 1 WHERE (post_id = %d AND meta_key = 'wpwpru_cpv_pageviews')", $id)
-			);
-		}
-	}
-	die();
+    return $located;
 }

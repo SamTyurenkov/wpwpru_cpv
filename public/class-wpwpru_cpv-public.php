@@ -96,9 +96,9 @@ class Wpwpru_cpv_Public {
 		 * class.
 		 */
 
-	 wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wpwpru_cpv-public.js', array( 'jquery' ), $this->version, false );
+	 wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wpwpru_cpv-public.js', array( 'jquery' ), filemtime(plugin_dir_path( __FILE__ ) . 'js/wpwpru_cpv-public.js'), false );
 
-	 if(is_single() == false) return;
+	if(is_singular('post') == false) return; 
  
 	 $nonce = wp_create_nonce( "_wpwpru-cpv" );
 	 $ajax_url = admin_url( 'admin-ajax.php' );
@@ -113,8 +113,8 @@ class Wpwpru_cpv_Public {
 				'postid' => $postid
 			) 
 		  );
+	
 	}
-
 	public function wpwpru_cpv_shortcode( $attributes ) {
 
         wp_enqueue_style( $this->plugin_name );
@@ -128,6 +128,26 @@ class Wpwpru_cpv_Public {
 	public function register_shortcodes() {
 		add_shortcode( 'wpwpru_cpv', array( $this, 'wpwpru_cpv_shortcode') );
 
+	}
+	
+	public function wpwpru_cpv_pageviewer() {
+	  
+	global $wpdb;
+
+	$id = strip_tags($_POST['id']);
+
+	if (is_numeric($id) && strlen($id) < 7 && wp_verify_nonce( $_POST['nonce'], '_wpwpru-cpv')) {	  
+		
+	$views = get_post_meta($id, 'wpwpru_cpv_pageviews', true);
+	if (empty($views)) {
+	update_post_meta($id, 'wpwpru_cpv_pageviews', 1);
+	} else {
+	$wpdb->query( 
+	$wpdb->prepare( "UPDATE wp_postmeta	SET meta_value = meta_value + 1 WHERE (post_id = %d AND meta_key = 'wpwpru_cpv_pageviews')", $id)
+	);
+	}
+		
+	}
 	}
 
 }

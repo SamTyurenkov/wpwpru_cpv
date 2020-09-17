@@ -10,4 +10,4 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 1)This plugin counts single post views. 
 2)Optionally displays them with a shortcode - [wpwpru_cpv].
 
-
+Plugin based on https://wppb.me boilerplate template for Wordpress plugins.

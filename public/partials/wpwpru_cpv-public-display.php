@@ -12,8 +12,9 @@
  * @subpackage Wpwpru_cpv/public/partials
  */
 
-if(is_single() == false) return;
-$views = get_post_meta(get_the_ID(), 'wpwpru_cpv_pageviewer', true);
+if(is_singular('post') == false) return;
+$views = get_post_meta(get_the_ID(), 'wpwpru_cpv_pageviews', true);
+if(empty($views)) $views = 0;
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->

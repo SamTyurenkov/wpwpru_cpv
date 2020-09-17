@@ -173,6 +173,8 @@ class Wpwpru_cpv {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
+		$this->loader->add_action( 'wp_ajax_nopriv_wpwpru_cpv_pageviewer', $plugin_public, 'wpwpru_cpv_pageviewer' );
+		$this->loader->add_action(	'wp_ajax_wpwpru_cpv_pageviewer', $plugin_public, 'wpwpru_cpv_pageviewer');
 	}
 
 	/**
